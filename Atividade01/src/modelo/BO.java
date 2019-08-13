@@ -1,12 +1,15 @@
 
 package modelo;
 
+import java.util.List;
+import modelo.persistencia.DadosException;
+
 
 public interface BO<T> {
     
     void validar(T entidade) throws NegocioException;
     
-    /*listar*/ 
+    List<T> listar() throws DadosException;
     
     void incluir(T entidade) throws NegocioException;
     
@@ -14,6 +17,6 @@ public interface BO<T> {
     
     void excluir(T entidade) throws NegocioException;
     
-   /* consultar */
+   T consultar() throws DadosException;
     
 }
