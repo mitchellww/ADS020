@@ -7,30 +7,36 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-@WebServlet(name = "OlaMundoServlet", urlPatterns = {"/OlaMundoServlet"})
-public class OlaMundoServlet extends HttpServlet {
+@WebServlet(name = "SessaoServlet", urlPatterns = {"/SessaoServlet"})
+public class SessaoServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        HttpSession session = request.getSession();
+
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
 
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet OlaMundoServlet</title>");
+            out.println("<title>Servlet SessaoServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            /* out.println("<h1>Servlet OlaMundoServlet at " + request.getContextPath() + "</h1>"); */
+            out.println("<h1>Servlet SessaoServlet at " + request.getContextPath() + "</h1>");
 
+            out.println("SESSION_ID=" + session.getId());
+            
             String nome = request.getParameter("nome");
             if (nome != null && nome.isEmpty() == false) {
-                out.println("<h1>Olá " + nome + "!</h1>");
-            } else {
-                out.println("<h1>Olá Mundo!</h1>");
+                session.setAttribute("nome", nome);
             }
-            out.println("<a href=" + response.encodeURL(request.getContextPath()+"/index.html") + ">Voltar</a>");
+            
+            out.println("Nome salvo na sessão: " + session.getAttribute("nome"));
+            
             out.println("</body>");
             out.println("</html>");
         }
@@ -40,7 +46,6 @@ public class OlaMundoServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-        response.sendRedirect(request.getContextPath()+"/index.html");
     }
 
     @Override
