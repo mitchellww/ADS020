@@ -8,25 +8,8 @@ import modelo.persistencia.DadosException;
 
 public class AlunoBO implements BO<Aluno> {
 
-    private Object aluno;
-    private Object matricula;
-    private Object nome;
-
     @Override
-    public void validar(Aluno entidade) throws NegocioException {
-
-        if (aluno.getMatricula() == 0) {
-            throw new NegocioException("Campo obrigatório MATRÍCULA não informado!");
-        }
-
-        if (aluno.getNome().isEmpty()) {
-            throw new NegocioException("Campo obrigatório NOME não informado!");
-        }
-    }
-
-    @Override
-    public List<Aluno> listar() throws DadosException {
-
+    public List<Aluno> listar() throws NegocioException {
         List<Aluno> lista = new ArrayList<Aluno>();
         AlunoDAO dao = new AlunoDAO();
 
@@ -43,8 +26,18 @@ public class AlunoBO implements BO<Aluno> {
     }
 
     @Override
-    public void incluir(Aluno entidade) throws NegocioException {
+    public void validar(Aluno entidade) throws NegocioException {
+        if (entidade.getMatricula() == 0) {
+            throw new NegocioException("Campo obrigatório MATRÍCULA não informado!");
+        }
 
+        if (entidade.getNome().isEmpty()) {
+            throw new NegocioException("Campo obrigatório NOME não informado!");
+        }
+    }
+
+    @Override
+    public void incluir(Aluno entidade) throws NegocioException {
         validar(entidade);
         AlunoDAO dao = new AlunoDAO();
 
@@ -57,7 +50,6 @@ public class AlunoBO implements BO<Aluno> {
 
     @Override
     public void alterar(Aluno entidade) throws NegocioException {
-
         consultar(entidade);
         validar(entidade);
         AlunoDAO dao = new AlunoDAO();
@@ -71,17 +63,18 @@ public class AlunoBO implements BO<Aluno> {
 
     @Override
     public void excluir(Aluno entidade) throws NegocioException {
-
-        /* String sql = "DELETE FROM ALUNOS WHERE ID=?";
-        Connection conexao = ConexaoBD.getConexao();
-        PreparedStatement comando = conexao.prepareStatement(sql);
-        comando.setInt(1, id);
-        comando.executeUpdate(); */
+        consultar(entidade);
+      AlunoDAO dao = new AlunoDAO();
+      
+      try { 
+          dao.excluir(entidade.getId());
+      } catch (DadosException ex) {
+          throw new NegocioException ("", ex);
+      }
     }
 
     @Override
-    public Aluno consultar() throws DadosException {
-
+    public Aluno consultar(Aluno entidade) throws NegocioException {
         Aluno aluno = new Aluno();
         AlunoDAO dao = new AlunoDAO();
 
